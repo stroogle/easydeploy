@@ -1,4 +1,4 @@
-use docker::{Docker, DockerContainerId};
+use crate::docker::{Docker, DockerContainerId};
 
 impl Docker {
     pub fn get_compose_project(host: DockerContainerId) -> String {
