@@ -1,8 +1,10 @@
 use crate::docker::{Docker, DockerError};
 use std::process::Command;
+use log::{info, debug};
 
 impl Docker {
     pub fn upgrade_service(project_name: String, service_name: String) -> Result<String, DockerError> {
+        info!("Attempting upgrade for project: {}, service: {}", &project_name, &service_name);
 
         let containers = match Docker::get_service_containers(
             project_name.clone(),
@@ -35,7 +37,9 @@ impl Docker {
         }
 
         for container in containers.iter() {
+            info!("Upgrading container: {}", &container);
 
+            info!("Scaling up service and spinning up replacement container with upgraded latest image.");
             let _ = Command::new("docker")
             .args([
                 "compose",
@@ -52,21 +56,24 @@ impl Docker {
                 &service_name
             ])
             .output();
-
+            
+            info!("Stopping old container: {}", &container);
             let _ = Command::new("docker")
             .args([
                 "stop",
                 container
             ])
             .output();
-
+            
+            info!("Removing old container: {}", &container);
             let _ = Command::new("docker")
             .args([
                 "rm",
                 container
             ])
             .output();
-
+            
+            info!("Scaling service back down to original size.");
             let _ = Command::new("docker")
             .args([
                 "compose",

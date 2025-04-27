@@ -1,12 +1,12 @@
 use crate::docker::{Docker, DockerError, DockerContainerId};
 
 use std::process:: Command;
-use core::str;
+use log::{debug, info};
 
 impl Docker {
 
     pub fn get_container_image(container_id: DockerContainerId) -> Result<String, DockerError> {
-
+        info!("Getting image for container: {}", &container_id);
         let command = Command::new("docker")
         .args([
             "inspect",
@@ -17,11 +17,21 @@ impl Docker {
         .output();
 
         let output_bytes = match command {
-            Ok(v) => v.stdout,
+            Ok(v) => {
+                debug!("Getting container image, raw bytes from output are: {:?}", &v.stdout);
+                v.stdout
+            },
             Err(_) => return Err(DockerError::Failed),
         };
 
-        let output_str: String = str::from_utf8(&output_bytes).unwrap().to_owned();
+        let mut output_str = String::from_utf8(output_bytes).unwrap();
+
+        let mut t = output_str.chars();
+        t.next();
+        t.next_back();
+        t.next_back();
+
+        output_str = String::from(t.as_str());
 
         Ok(output_str)
     }

@@ -4,6 +4,7 @@ use crate::docker::{
 };
 use std::process::Command;
 use core::str;
+use log::info;
 
 pub enum ImageStatus {
     PulledNew,
@@ -13,6 +14,7 @@ pub enum ImageStatus {
 impl Docker {
 
     pub fn pull_latest_image(image_name: String) -> Result<ImageStatus, DockerError> {
+        info!("Attempting to pull image: {}", &image_name);
 
         let command = Command::new("docker")
         .args([
