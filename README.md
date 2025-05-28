@@ -1,4 +1,6 @@
-# easydeploy
+<p align="center">
+  <img height="200px" src="https://github.com/stroogle/easydeploy/blob/main/Easy%20Deploy%20Logo.png" alt="Easy Deploy's Logo"/>
+</p>
 
 **A simple tool for easily supporting zero-downtime deployments for docker compose projects.**
 
