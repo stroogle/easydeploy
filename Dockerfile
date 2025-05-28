@@ -5,19 +5,19 @@ WORKDIR /app
 COPY . .
 RUN cargo build --release
 
-#FROM docker:28.1.0-rc.1-cli-alpine3.21
-
 FROM alpine:3.21.3
 
 WORKDIR /app
 
 COPY --from=builder /app/target/release/easydeploy .
+COPY ./cron.sh /app/cron.sh
 
 RUN apk update
 RUN apk add docker-cli-compose
+RUN apk add bash
 
-RUN crontab -l | { cat; echo "0 * * * * flock -n /app/easydeploy.lock /app/easydeploy >> /var/log/cron.log"; } | crontab -
+RUN chmod +x /app/cron.sh
 
-RUN touch /var/log/cron.log
+ENV TIMING="* * * * *"
 
-CMD crond && tail -f /var/log/cron.log
+CMD printf "${TIMING} /bin/bash /app/cron.sh >> /tmp/log 2>&1\n\n" > /app/cron-job && crontab /app/cron-job && crond -l 2 -f 

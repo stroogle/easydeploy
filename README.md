@@ -34,7 +34,7 @@ services:
   foo:
     image: someimage:latest
     labels:
-      com.easydeploy.enabled: true #Add this to any service you want to have zero-downtime deployments on.
+      com.easydeploy.enabled: true #Add this to any service enables zero-downtime deployments.
     deploy:
       replicas: 2
   easydeploy:
@@ -42,4 +42,7 @@ services:
     volumes:
       - ./docker-compose.yml:/app/docker-compose.yml
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./deployment.logs:/tmp/logs #Optional
+    environment:
+      - TIMING: "*/2 * * * *" #Optional
 ```
