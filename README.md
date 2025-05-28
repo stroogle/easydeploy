@@ -34,7 +34,7 @@ services:
   foo:
     image: someimage:latest
     labels:
-      com.easydeploy.enabled: true #Add this to any service enables zero-downtime deployments.
+      com.easydeploy.enabled: true #Adding this to any service enables zero-downtime deployments.
     deploy:
       replicas: 2
   easydeploy:
